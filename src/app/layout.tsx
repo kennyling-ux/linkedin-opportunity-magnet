@@ -1,31 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
+import { AppProvider } from "@/context/AppContext";
+import { Toaster } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 
 export const metadata: Metadata = {
-  title: "LinkedIn Opportunity Magnet",
-  description: "Attract the right LinkedIn opportunities to your profile",
+  title: "Opportunity Magnet — LinkedIn 個人品牌優化系統",
+  description: "分析並優化你的 LinkedIn 個人頁面，讓工作機會、客戶與合作邀約主動找上你。",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+    <html lang="zh-TW">
+      <body className={`${geist.variable} font-sans antialiased bg-white text-slate-900`}>
+        <AppProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </AppProvider>
       </body>
     </html>
   );

@@ -238,12 +238,12 @@ export function t(key: TranslationKey, lang: Lang): string {
   const entry = translations[key];
   if (!entry) return key;
   const val = entry[lang];
-  return typeof val === "string" ? val : (val as string[])[0];
+  return typeof val === "string" ? val : (val as unknown as string[])[0];
 }
 
 export function tArr(key: TranslationKey, lang: Lang): string[] {
   const entry = translations[key];
   if (!entry) return [];
   const val = entry[lang];
-  return Array.isArray(val) ? val : [val as string];
+  return Array.isArray(val) ? [...(val as unknown as string[])] : [val as string];
 }

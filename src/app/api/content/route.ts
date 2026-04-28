@@ -1,5 +1,5 @@
-import { anthropic } from "@ai-sdk/anthropic";
-import { generateObject, generateText } from "ai";
+import { google } from "@ai-sdk/google";
+import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -11,7 +11,7 @@ const topicsSchema = z.object({
       angle: z.string(),
       estimatedEngagement: z.enum(["high", "medium", "standard"]),
     })
-  ).length(30),
+  ).min(20).max(35),
 });
 
 const postSchema = z.object({
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   if (action === "generate-post") {
     const { object } = await generateObject({
-      model: anthropic("claude-sonnet-4.6"),
+      model: google("gemini-2.5-flash"),
       schema: postSchema,
       prompt: `You are a LinkedIn content expert who writes posts that generate real business opportunities.
 
@@ -47,7 +47,7 @@ Rules:
   }
 
   const { object } = await generateObject({
-    model: anthropic("claude-sonnet-4.6"),
+    model: google("gemini-2.5-flash"),
     schema: topicsSchema,
     prompt: `You are a LinkedIn content strategist. Generate 30 high-value post topics for this professional.
 

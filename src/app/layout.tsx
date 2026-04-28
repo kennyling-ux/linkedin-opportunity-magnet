@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import { Toaster } from "@/components/ui/sonner";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
@@ -15,10 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-TW">
       <body className={`${geist.variable} font-sans antialiased bg-white text-slate-900`}>
-        <AppProvider>
-          {children}
-          <Toaster richColors position="top-right" />
-        </AppProvider>
+        <LanguageProvider>
+          <AppProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </AppProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

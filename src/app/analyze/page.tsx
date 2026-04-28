@@ -7,13 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useApp } from "@/context/AppContext";
-import { Zap, ArrowRight, Info } from "lucide-react";
+import { Zap, ArrowRight, Lock, Clock, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export default function AnalyzePage() {
   const router = useRouter();
   const { setInput, setAnalysis, setIsAnalyzing } = useApp();
+  const { t } = useLanguage();
   const [rawContent, setRawContent] = useState("");
   const [profileUrl, setProfileUrl] = useState("");
   const [industry, setIndustry] = useState("");
@@ -23,11 +26,11 @@ export default function AnalyzePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!rawContent.trim()) {
-      toast.error("請貼上你的 LinkedIn 個人頁面內容");
+      toast.error(t("errEmpty"));
       return;
     }
     if (rawContent.trim().length < 100) {
-      toast.error("內容太短，請貼上更完整的個人頁面資訊");
+      toast.error(t("errTooShort"));
       return;
     }
 
@@ -47,10 +50,10 @@ export default function AnalyzePage() {
       if (!res.ok) throw new Error("Analysis failed");
       const data = await res.json();
       setAnalysis(data);
-      toast.success("分析完成！");
+      toast.success(t("successAnalysis"));
       router.push("/dashboard");
     } catch {
-      toast.error("分析失敗，請確認 API 金鑰設定並重試");
+      toast.error(t("errFail"));
     } finally {
       setLoading(false);
       setIsAnalyzing(false);
@@ -58,103 +61,134 @@ export default function AnalyzePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <header className="border-b border-slate-200 bg-white px-6 h-14 flex items-center gap-3">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+    <div className="min-h-screen bg-slate-950 flex flex-col">
+      {/* Nav */}
+      <header className="border-b border-slate-800 px-6 h-14 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
             <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="font-semibold text-slate-900 text-sm">Opportunity Magnet</span>
+          <span className="font-semibold text-white text-sm">{t("brand")}</span>
         </Link>
+        <LanguageSwitcher variant="dark" />
       </header>
 
-      <main className="flex-1 max-w-2xl mx-auto w-full px-6 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">分析你的 LinkedIn</h1>
-          <p className="text-slate-500">貼上個人頁面內容，AI 將在 30 秒內給出完整評分與優化建議。</p>
-        </div>
-
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3 mb-8 text-sm text-blue-700">
-          <Info className="w-4 h-4 mt-0.5 shrink-0" />
-          <p>請從 LinkedIn 個人頁面手動複製內容貼上（包含 About、Experience、技能等區塊）。本系統不會自動爬取任何資料。</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="content" className="text-sm font-medium text-slate-700">
-              LinkedIn 個人頁面內容 <span className="text-red-500">*</span>
-            </Label>
-            <Textarea
-              id="content"
-              placeholder="貼上你的 LinkedIn About、工作經歷、技能、推薦等內容..."
-              value={rawContent}
-              onChange={(e) => setRawContent(e.target.value)}
-              className="min-h-52 text-sm resize-none"
-              disabled={loading}
-            />
-            <p className="text-xs text-slate-400">{rawContent.length} 字元 · 建議貼上至少 300 字元</p>
+      <main className="flex-1 flex items-start justify-center py-12 px-6">
+        <div className="w-full max-w-2xl">
+          {/* Header */}
+          <div className="mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5">
+              <Sparkles className="w-3.5 h-3.5" />
+              {t("tagline")}
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-3 tracking-tight">{t("analyzeTitle")}</h1>
+            <p className="text-slate-400 text-base">{t("analyzeSub")}</p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="url" className="text-sm font-medium text-slate-700">
-              LinkedIn 個人頁面連結 <span className="text-slate-400 font-normal">（選填）</span>
-            </Label>
-            <Input
-              id="url"
-              type="url"
-              placeholder="https://www.linkedin.com/in/yourprofile"
-              value={profileUrl}
-              onChange={(e) => setProfileUrl(e.target.value)}
-              disabled={loading}
-            />
+          {/* Trust bar */}
+          <div className="flex items-center gap-5 mb-8 text-xs text-slate-500">
+            <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" />{t("trustNoStore")}</span>
+            <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{t("trust30s")}</span>
+            <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" />{t("trustFree")}</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Main textarea */}
             <div className="space-y-2">
-              <Label htmlFor="industry" className="text-sm font-medium text-slate-700">
-                所屬產業 <span className="text-slate-400 font-normal">（選填，AI 可建議）</span>
+              <Label htmlFor="content" className="text-sm font-medium text-slate-300">
+                {t("contentLabel")} <span className="text-blue-400">*</span>
+              </Label>
+              <div className="relative">
+                <Textarea
+                  id="content"
+                  placeholder={t("contentPlaceholder")}
+                  value={rawContent}
+                  onChange={(e) => setRawContent(e.target.value)}
+                  className="min-h-52 text-sm resize-none bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-600 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl"
+                  disabled={loading}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-slate-600">{t("contentHint")}</p>
+                <span className={`text-xs tabular-nums ${rawContent.length < 100 ? "text-slate-600" : "text-blue-500"}`}>
+                  {rawContent.length}
+                </span>
+              </div>
+            </div>
+
+            {/* Optional fields */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="industry" className="text-xs font-medium text-slate-400">
+                  {t("industryLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
+                </Label>
+                <Input
+                  id="industry"
+                  placeholder={t("industryPlaceholder")}
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  className="bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 text-sm h-9 rounded-lg"
+                  disabled={loading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="target" className="text-xs font-medium text-slate-400">
+                  {t("targetLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
+                </Label>
+                <Input
+                  id="target"
+                  placeholder={t("targetPlaceholder")}
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 text-sm h-9 rounded-lg"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="url" className="text-xs font-medium text-slate-400">
+                {t("urlLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
               </Label>
               <Input
-                id="industry"
-                placeholder="例：SaaS、金融科技、顧問"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
+                id="url"
+                type="url"
+                placeholder={t("urlPlaceholder")}
+                value={profileUrl}
+                onChange={(e) => setProfileUrl(e.target.value)}
+                className="bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 text-sm h-9 rounded-lg"
                 disabled={loading}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="target" className="text-sm font-medium text-slate-700">
-                目標職位或受眾 <span className="text-slate-400 font-normal">（選填）</span>
-              </Label>
-              <Input
-                id="target"
-                placeholder="例：CTO、新創創辦人、B2B 客戶"
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-          </div>
 
-          <Button
-            type="submit"
-            disabled={loading || !rawContent.trim()}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium text-base"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                AI 分析中...
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                開始分析
-                <ArrowRight className="w-4 h-4" />
-              </span>
-            )}
-          </Button>
-        </form>
+            {/* Submit */}
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={loading || rawContent.trim().length < 100}
+                className="w-full h-12 bg-blue-500 hover:bg-blue-400 disabled:bg-slate-800 disabled:text-slate-600 text-white border-0 shadow-xl shadow-blue-500/20 font-semibold text-sm rounded-xl transition-all"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2.5">
+                    <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    {t("analyzing")}
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Zap className="w-4 h-4" />
+                    {t("submitBtn")}
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                )}
+              </Button>
+              {rawContent.trim().length > 0 && rawContent.trim().length < 100 && (
+                <p className="text-center text-xs text-amber-500/70 mt-2">
+                  {t("tooShort")} {100 - rawContent.trim().length} {t("tooShortSuffix")}
+                </p>
+              )}
+            </div>
+          </form>
+        </div>
       </main>
     </div>
   );

@@ -1,4 +1,4 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   const { rawContent, industry } = await req.json();
 
   const { object } = await generateObject({
-    model: anthropic("claude-sonnet-4.6"),
+    model: google("gemini-2.5-flash"),
     schema,
     prompt: `You are a consultant-level credibility strategist. Transform this LinkedIn profile into compelling case studies and identify credibility gaps.
 

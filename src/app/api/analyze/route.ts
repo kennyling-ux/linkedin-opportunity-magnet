@@ -1,4 +1,4 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -11,7 +11,7 @@ const schema = z.object({
     overall: z.number().min(0).max(100),
     opportunityLevel: z.enum(["low", "medium", "high"]),
     opportunityReason: z.string(),
-    opportunityImprovements: z.array(z.string()).length(3),
+    opportunityImprovements: z.array(z.string()),
   }),
   gaps: z.object({
     missingElements: z.array(z.string()),
@@ -20,7 +20,7 @@ const schema = z.object({
     credibilityIssues: z.array(z.string()),
   }),
   suggestedIndustry: z.string(),
-  suggestedTargetRoles: z.array(z.string()).length(3),
+  suggestedTargetRoles: z.array(z.string()),
   suggestedAudience: z.string(),
 });
 
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { object } = await generateObject({
-    model: anthropic("claude-sonnet-4.6"),
+    model: google("gemini-2.5-flash"),
     schema,
     prompt: `You are an expert LinkedIn profile analyst and personal branding strategist.
 

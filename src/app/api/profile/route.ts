@@ -1,4 +1,4 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -10,7 +10,7 @@ const schema = z.object({
       label: z.string(),
       text: z.string(),
     })
-  ).length(3),
+  ).min(1).max(5),
   aboutOriginal: z.string(),
   aboutOptimized: z.string(),
   experienceRewrites: z.array(
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   const { rawContent, industry, targetRole } = await req.json();
 
   const { object } = await generateObject({
-    model: anthropic("claude-sonnet-4.6"),
+    model: google("gemini-2.5-flash"),
     schema,
     prompt: `You are a world-class LinkedIn profile optimizer. Rewrite the following profile content to maximize opportunity attraction.
 

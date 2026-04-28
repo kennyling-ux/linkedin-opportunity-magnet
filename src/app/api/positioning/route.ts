@@ -1,4 +1,4 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -6,7 +6,7 @@ import { z } from "zod";
 const schema = z.object({
   topCareerDirections: z.array(
     z.object({ title: z.string(), rationale: z.string() })
-  ).length(3),
+  ).min(1).max(5),
   targetMarkets: z.array(z.string()),
   skillsToStrengthen: z.array(z.string()),
   contentDirections: z.array(z.string()),
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const { rawContent, industry, targetRole } = await req.json();
 
   const { object } = await generateObject({
-    model: anthropic("claude-sonnet-4.6"),
+    model: google("gemini-2.5-flash"),
     schema,
     prompt: `You are a strategic career positioning expert. Analyze this LinkedIn profile and provide high-value positioning advice.
 

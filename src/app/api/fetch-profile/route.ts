@@ -1,49 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 
-interface ProxycurlExperience {
+interface ScrapInExperience {
   title?: string;
-  company?: string;
+  companyName?: string;
   description?: string;
-  starts_at?: { year?: number; month?: number };
-  ends_at?: { year?: number; month?: number } | null;
+  startDate?: string;
+  endDate?: string;
 }
 
-interface ProxycurlEducation {
-  school?: string;
-  degree_name?: string;
-  field_of_study?: string;
-  starts_at?: { year?: number };
-  ends_at?: { year?: number };
+interface ScrapInEducation {
+  schoolName?: string;
+  degreeName?: string;
+  fieldOfStudy?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
-interface ProxycurlProfile {
-  full_name?: string;
+interface ScrapInProfile {
+  firstName?: string;
+  lastName?: string;
   headline?: string;
   summary?: string;
   city?: string;
-  country_full_name?: string;
-  experiences?: ProxycurlExperience[];
-  education?: ProxycurlEducation[];
+  region?: string;
+  country?: string;
+  currentJobTitle?: string;
+  currentCompanyName?: string;
+  experiences?: ScrapInExperience[];
+  education?: ScrapInEducation[];
   skills?: string[];
   certifications?: { name?: string }[];
+  success?: boolean;
 }
 
-function formatDate(d?: { year?: number; month?: number } | null): string {
-  if (!d) return "Present";
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  if (d.month && d.year) return `${months[d.month - 1]} ${d.year}`;
-  if (d.year) return String(d.year);
-  return "Present";
-}
-
-function buildRawContent(p: ProxycurlProfile): string {
+function buildRawContent(p: ScrapInProfile): string {
   const sections: string[] = [];
 
-  if (p.full_name) sections.push(`Name: ${p.full_name}`);
+  const name = [p.firstName, p.lastName].filter(Boolean).join(" ");
+  if (name) sections.push(`Name: ${name}`);
   if (p.headline) sections.push(`Headline: ${p.headline}`);
-  if (p.city || p.country_full_name) {
-    sections.push(`Location: ${[p.city, p.country_full_name].filter(Boolean).join(", ")}`);
-  }
+  const location = [p.city, p.region, p.country].filter(Boolean).join(", ");
+  if (location) sections.push(`Location: ${location}`);
 
   if (p.summary) {
     sections.push(`\nAbout:\n${p.summary}`);
@@ -51,18 +48,21 @@ function buildRawContent(p: ProxycurlProfile): string {
 
   if (p.experiences?.length) {
     const expLines = p.experiences.map((e) => {
-      const dateRange = `${formatDate(e.starts_at)} – ${formatDate(e.ends_at)}`;
-      const lines = [`${e.title || "Role"} at ${e.company || "Company"} (${dateRange})`];
-      if (e.description) lines.push(e.description);
-      return lines.join("\n");
+      const dateRange = [e.startDate, e.endDate || "Present"].filter(Boolean).join(" – ");
+      const header = `${e.title || "Role"} at ${e.companyName || "Company"}${dateRange ? ` (${dateRange})` : ""}`;
+      return e.description ? `${header}\n${e.description}` : header;
     });
     sections.push(`\nExperience:\n${expLines.join("\n\n")}`);
   }
 
   if (p.education?.length) {
     const eduLines = p.education.map((e) => {
-      const years = [e.starts_at?.year, e.ends_at?.year].filter(Boolean).join(" – ");
-      return `${e.school || "School"}${e.degree_name ? ` — ${e.degree_name}` : ""}${e.field_of_study ? `, ${e.field_of_study}` : ""}${years ? ` (${years})` : ""}`;
+      const years = [e.startDate, e.endDate].filter(Boolean).join(" – ");
+      return [
+        e.schoolName,
+        e.degreeName && e.fieldOfStudy ? `${e.degreeName}, ${e.fieldOfStudy}` : (e.degreeName || e.fieldOfStudy),
+        years ? `(${years})` : "",
+      ].filter(Boolean).join(" — ");
     });
     sections.push(`\nEducation:\n${eduLines.join("\n")}`);
   }
@@ -86,35 +86,39 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid LinkedIn URL" }, { status: 400 });
   }
 
-  const apiKey = process.env.PROXYCURL_API_KEY;
+  const apiKey = process.env.SCRAPIN_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ error: "PROXYCURL_API_KEY not configured" }, { status: 503 });
+    return NextResponse.json({ error: "SCRAPIN_API_KEY not configured" }, { status: 503 });
   }
 
-  const endpoint = `https://nubela.co/proxycurl/api/v2/linkedin?url=${encodeURIComponent(url)}&use_cache=if-present&fallback_to_cache=on-error`;
+  const endpoint = `https://api.scrapin.io/enrichment/profile?apikey=${apiKey}&linkedinUrl=${encodeURIComponent(url)}`;
 
-  const res = await fetch(endpoint, {
-    headers: { Authorization: `Bearer ${apiKey}` },
-  });
+  const res = await fetch(endpoint);
 
   if (!res.ok) {
     const body = await res.text();
+    console.error("ScrapIn error", res.status, body);
     if (res.status === 404) {
       return NextResponse.json({ error: "Profile not found or private" }, { status: 404 });
     }
-    if (res.status === 403) {
-      return NextResponse.json({ error: "Profile is private" }, { status: 403 });
+    if (res.status === 401 || res.status === 403) {
+      return NextResponse.json({ error: "Invalid API key" }, { status: 403 });
     }
-    console.error("Proxycurl error", res.status, body);
     return NextResponse.json({ error: "Failed to fetch profile" }, { status: 502 });
   }
 
-  const profile: ProxycurlProfile = await res.json();
+  const profile: ScrapInProfile = await res.json();
+
+  if (!profile.success) {
+    return NextResponse.json({ error: "Profile not found or private" }, { status: 404 });
+  }
+
   const rawContent = buildRawContent(profile);
+  const name = [profile.firstName, profile.lastName].filter(Boolean).join(" ");
 
   return NextResponse.json({
     rawContent,
-    name: profile.full_name ?? "",
+    name,
     headline: profile.headline ?? "",
   });
 }

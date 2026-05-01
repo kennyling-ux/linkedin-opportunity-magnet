@@ -191,7 +191,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="bg-slate-950 border-t border-slate-900 py-6 text-center text-slate-600 text-xs">
-        © 2026 Opportunity Magnet · {t("footerNote")}
+        © 2026 Luminary · {t("footerNote")}
       </footer>
     </div>
   );

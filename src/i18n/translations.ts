@@ -2,7 +2,7 @@ export type Lang = "zh" | "en";
 
 export const translations = {
   // ── Common ──────────────────────────────────────────────────────
-  brand: { zh: "Opportunity Magnet", en: "Opportunity Magnet" },
+  brand: { zh: "Luminary", en: "Luminary" },
   tagline: { zh: "Gemini AI · 個人品牌優化系統", en: "Gemini AI · Personal Brand Optimizer" },
   startAnalysis: { zh: "免費開始分析", en: "Start Free Analysis" },
   reanalyze: { zh: "重新分析", en: "Re-analyze" },
@@ -38,7 +38,7 @@ export const translations = {
 
   // ── Landing page ─────────────────────────────────────────────────
   heroTitle1: { zh: "讓 LinkedIn", en: "Turn LinkedIn Into" },
-  heroTitle2: { zh: "主動吸引機會", en: "an Opportunity Magnet" },
+  heroTitle2: { zh: "主動吸引機會", en: "an Luminary" },
   heroSub: {
     zh: "不只是內容生成工具。分析你的定位缺口，給出可立即執行的優化路徑，讓工作機會、客戶與合作自動找上你。",
     en: "More than a content generator. Analyze your positioning gaps and get an actionable optimization roadmap — so jobs, clients, and partnerships find you.",

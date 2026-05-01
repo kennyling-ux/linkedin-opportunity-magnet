@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useApp } from "@/context/AppContext";
-import { Zap, ArrowRight, Lock, Clock, Sparkles, Download, CheckCircle2 } from "lucide-react";
+import { Zap, ArrowRight, Lock, Clock, Sparkles, Download, CheckCircle2, ChevronDown, Check } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
@@ -27,6 +25,66 @@ const TARGET_ROLES = [
   "Marketing Manager", "Sales Leader", "B2B Clients",
   "Investors / VCs", "Freelance Clients", "Career Changers", "Other",
 ];
+
+function Dropdown({
+  value, onChange, options, placeholder, disabled,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  placeholder: string;
+  disabled?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => setOpen((o) => !o)}
+        className={`w-full flex items-center justify-between gap-2 px-3 h-10 rounded-lg border text-sm transition-all
+          ${open ? "border-blue-500 ring-1 ring-blue-500/30" : "border-slate-700 hover:border-slate-600"}
+          bg-slate-900 text-left disabled:opacity-50 disabled:cursor-not-allowed`}
+      >
+        <span className={value ? "text-slate-200" : "text-slate-500"}>
+          {value || placeholder}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-slate-500 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl shadow-black/50 overflow-hidden">
+          <div className="max-h-56 overflow-y-auto py-1">
+            {options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => { onChange(opt); setOpen(false); }}
+                className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors
+                  ${value === opt
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+              >
+                {opt}
+                {value === opt && <Check className="w-3.5 h-3.5 shrink-0" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function AnalyzePage() {
   const router = useRouter();
@@ -50,15 +108,11 @@ export default function AnalyzePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: profileUrl.trim() }),
       });
-
       if (res.status === 403 || res.status === 404) {
-        const data = await res.json() as { error: string };
         toast.error(res.status === 404 ? t("fetchErrNotFound") : t("fetchErrPrivate"));
-        console.error(data.error);
         return;
       }
       if (!res.ok) throw new Error();
-
       const data = await res.json() as { rawContent: string; name: string; headline: string };
       setRawContent(data.rawContent);
       setFetched(true);
@@ -72,18 +126,11 @@ export default function AnalyzePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!rawContent.trim()) {
-      toast.error(t("errEmpty"));
-      return;
-    }
-    if (rawContent.trim().length < 100) {
-      toast.error(t("errTooShort"));
-      return;
-    }
+    if (!rawContent.trim()) { toast.error(t("errEmpty")); return; }
+    if (rawContent.trim().length < 100) { toast.error(t("errTooShort")); return; }
 
     setLoading(true);
     setIsAnalyzing(true);
-
     const input = { rawContent, profileUrl, industry, targetRole };
     setInput(input);
 
@@ -93,8 +140,7 @@ export default function AnalyzePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       });
-
-      if (!res.ok) throw new Error("Analysis failed");
+      if (!res.ok) throw new Error();
       const data = await res.json();
       setAnalysis(data);
       toast.success(t("successAnalysis"));
@@ -107,10 +153,13 @@ export default function AnalyzePage() {
     }
   }
 
+  const charCount = rawContent.trim().length;
+  const isReady = charCount >= 100;
+
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
       {/* Nav */}
-      <header className="border-b border-slate-800 px-6 h-14 flex items-center justify-between">
+      <header className="border-b border-slate-800/60 px-6 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
             <Zap className="w-4 h-4 text-white" />
@@ -120,46 +169,46 @@ export default function AnalyzePage() {
         <LanguageSwitcher variant="dark" />
       </header>
 
-      <main className="flex-1 flex items-start justify-center py-12 px-6">
-        <div className="w-full max-w-2xl">
+      <main className="flex-1 flex items-start justify-center py-14 px-6">
+        <div className="w-full max-w-xl">
+
           {/* Header */}
           <div className="mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5">
               <Sparkles className="w-3.5 h-3.5" />
               {t("tagline")}
             </div>
-            <h1 className="text-3xl font-bold text-white mb-3 tracking-tight">{t("analyzeTitle")}</h1>
-            <p className="text-slate-400 text-base">{t("analyzeSub")}</p>
+            <h1 className="text-4xl font-bold text-white mb-3 tracking-tight leading-tight">
+              {t("analyzeTitle")}
+            </h1>
+            <p className="text-slate-400 text-base leading-relaxed">{t("analyzeSub")}</p>
           </div>
 
-          {/* Trust bar */}
-          <div className="flex items-center gap-5 mb-8 text-xs text-slate-500">
-            <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" />{t("trustNoStore")}</span>
-            <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{t("trust30s")}</span>
-            <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" />{t("trustFree")}</span>
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-8">
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* URL field + fetch button */}
-            <div className="space-y-2">
-              <Label htmlFor="url" className="text-sm font-medium text-slate-300">
-                {t("urlLabel")} <span className="text-blue-400">*</span>
-              </Label>
+            {/* Step 1 — URL */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
+                <span className="text-sm font-semibold text-slate-200">{t("urlLabel")}</span>
+              </div>
               <div className="flex gap-2">
                 <Input
-                  id="url"
                   type="url"
                   placeholder={t("urlPlaceholder")}
                   value={profileUrl}
                   onChange={(e) => { setProfileUrl(e.target.value); setFetched(false); }}
-                  className="flex-1 bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 text-sm h-10 rounded-lg"
+                  className="flex-1 bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 text-sm h-10 rounded-lg"
                   disabled={loading || fetching}
                 />
                 <Button
                   type="button"
                   onClick={handleFetch}
                   disabled={!profileUrl.trim() || fetching || loading}
-                  className="h-10 px-4 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-600 text-white border-0 text-sm font-medium rounded-lg shrink-0 transition-all"
+                  className={`h-10 px-4 border-0 text-sm font-medium rounded-lg shrink-0 transition-all
+                    ${fetched
+                      ? "bg-emerald-600 hover:bg-emerald-500 text-white"
+                      : "bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-600 text-white"}`}
                 >
                   {fetching ? (
                     <span className="flex items-center gap-2">
@@ -181,86 +230,86 @@ export default function AnalyzePage() {
               </div>
             </div>
 
-            {/* Profile content textarea */}
-            <div className="space-y-2">
+            {/* Divider */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-slate-800" />
+              <span className="text-xs text-slate-600 font-medium">or paste manually</span>
+              <div className="flex-1 h-px bg-slate-800" />
+            </div>
+
+            {/* Step 2 — Content */}
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="content" className="text-sm font-medium text-slate-300">
-                  {t("contentLabel")} <span className="text-blue-400">*</span>
-                </Label>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+                  <span className="text-sm font-semibold text-slate-200">
+                    {t("contentLabel")} <span className="text-blue-400 font-normal">*</span>
+                  </span>
+                </div>
                 {fetched && (
-                  <span className="flex items-center gap-1.5 text-xs text-emerald-400">
+                  <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
                     <CheckCircle2 className="w-3 h-3" />
                     {t("fetchedBadge")}
                   </span>
                 )}
               </div>
               <Textarea
-                id="content"
                 placeholder={t("contentPlaceholder")}
                 value={rawContent}
                 onChange={(e) => setRawContent(e.target.value)}
-                className="min-h-52 text-sm resize-none bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-600 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl"
+                className="min-h-48 text-sm resize-none bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-xl leading-relaxed"
                 disabled={loading}
               />
               <div className="flex items-center justify-between">
                 <p className="text-xs text-slate-600">{t("contentHint")}</p>
-                <span className={`text-xs tabular-nums ${rawContent.length < 100 ? "text-slate-600" : "text-blue-500"}`}>
-                  {rawContent.length}
+                <span className={`text-xs tabular-nums font-medium transition-colors ${isReady ? "text-emerald-500" : "text-slate-600"}`}>
+                  {charCount} {isReady ? "✓" : `/ 100`}
                 </span>
               </div>
+              {charCount > 0 && !isReady && (
+                <p className="text-xs text-amber-500/70">
+                  {t("tooShort")} {100 - charCount} {t("tooShortSuffix")}
+                </p>
+              )}
             </div>
 
-            {/* Optional fields */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-xs font-medium text-slate-400">
-                  {t("industryLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
-                </Label>
-                <Select value={industry} onValueChange={(v) => setIndustry(v ?? "")} disabled={loading}>
-                  <SelectTrigger className="w-full bg-slate-900 border-slate-700 text-slate-200 data-[placeholder]:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 h-9 text-sm rounded-lg">
-                    <SelectValue placeholder={t("industryPlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-800 shadow-xl z-50 max-h-64 overflow-y-auto">
-                    {INDUSTRIES.map((item) => (
-                      <SelectItem
-                        key={item}
-                        value={item}
-                        className="text-slate-300 text-sm py-2 px-3 cursor-pointer rounded-md hover:bg-slate-700 hover:text-white focus:bg-blue-600 focus:text-white data-[highlighted]:bg-slate-700 data-[highlighted]:text-white"
-                      >
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            {/* Step 3 — Context */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-slate-700 text-slate-400 text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
+                <span className="text-sm font-semibold text-slate-400">
+                  Context <span className="text-slate-600 font-normal text-xs">({t("industryOptional")})</span>
+                </span>
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-medium text-slate-400">
-                  {t("targetLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
-                </Label>
-                <Select value={targetRole} onValueChange={(v) => setTargetRole(v ?? "")} disabled={loading}>
-                  <SelectTrigger className="w-full bg-slate-900 border-slate-700 text-slate-200 data-[placeholder]:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 h-9 text-sm rounded-lg">
-                    <SelectValue placeholder={t("targetPlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-800 shadow-xl z-50 max-h-64 overflow-y-auto">
-                    {TARGET_ROLES.map((item) => (
-                      <SelectItem
-                        key={item}
-                        value={item}
-                        className="text-slate-300 text-sm py-2 px-3 cursor-pointer rounded-md hover:bg-slate-700 hover:text-white focus:bg-blue-600 focus:text-white data-[highlighted]:bg-slate-700 data-[highlighted]:text-white"
-                      >
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs text-slate-500 font-medium">{t("industryLabel")}</label>
+                  <Dropdown
+                    value={industry}
+                    onChange={setIndustry}
+                    options={INDUSTRIES}
+                    placeholder={t("industryPlaceholder")}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs text-slate-500 font-medium">{t("targetLabel")}</label>
+                  <Dropdown
+                    value={targetRole}
+                    onChange={setTargetRole}
+                    options={TARGET_ROLES}
+                    placeholder={t("targetPlaceholder")}
+                    disabled={loading}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Submit */}
-            <div className="pt-2">
+            <div className="pt-1 space-y-3">
               <Button
                 type="submit"
-                disabled={loading || rawContent.trim().length < 100}
+                disabled={loading || !isReady}
                 className="w-full h-12 bg-blue-500 hover:bg-blue-400 disabled:bg-slate-800 disabled:text-slate-600 text-white border-0 shadow-xl shadow-blue-500/20 font-semibold text-sm rounded-xl transition-all"
               >
                 {loading ? (
@@ -276,12 +325,13 @@ export default function AnalyzePage() {
                   </span>
                 )}
               </Button>
-              {rawContent.trim().length > 0 && rawContent.trim().length < 100 && (
-                <p className="text-center text-xs text-amber-500/70 mt-2">
-                  {t("tooShort")} {100 - rawContent.trim().length} {t("tooShortSuffix")}
-                </p>
-              )}
+              <div className="flex items-center justify-center gap-5 text-xs text-slate-600">
+                <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" />{t("trustNoStore")}</span>
+                <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" />{t("trust30s")}</span>
+                <span className="flex items-center gap-1.5"><Sparkles className="w-3 h-3" />{t("trustFree")}</span>
+              </div>
             </div>
+
           </form>
         </div>
       </main>

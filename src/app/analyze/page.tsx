@@ -36,6 +36,7 @@ function Dropdown({
   disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [openUp, setOpenUp] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,12 +47,20 @@ function Dropdown({
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  function handleOpen() {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setOpenUp(window.innerHeight - rect.bottom < 240);
+    }
+    setOpen((o) => !o);
+  }
+
   return (
     <div ref={ref} className="relative">
       <button
         type="button"
         disabled={disabled}
-        onClick={() => setOpen((o) => !o)}
+        onClick={handleOpen}
         className={`w-full flex items-center justify-between gap-2 px-3 h-10 rounded-lg border text-sm transition-all
           ${open ? "border-blue-500 ring-1 ring-blue-500/30" : "border-slate-700 hover:border-slate-600"}
           bg-slate-900 text-left disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -63,7 +72,8 @@ function Dropdown({
       </button>
 
       {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl shadow-black/50 overflow-hidden">
+        <div className={`absolute z-50 left-0 right-0 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl shadow-black/50 overflow-hidden
+          ${openUp ? "bottom-full mb-1" : "top-full mt-1"}`}>
           <div className="max-h-56 overflow-y-auto py-1">
             {options.map((opt) => (
               <button

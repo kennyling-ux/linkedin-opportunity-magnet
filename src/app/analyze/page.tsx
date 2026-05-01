@@ -6,12 +6,27 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useApp } from "@/context/AppContext";
 import { Zap, ArrowRight, Lock, Clock, Sparkles, Download, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+
+const INDUSTRIES = [
+  "SaaS / Software", "FinTech", "Consulting", "Marketing / Advertising",
+  "Healthcare", "Education", "E-commerce / Retail", "Finance / Banking",
+  "Real Estate", "Manufacturing", "Media / Entertainment", "Legal",
+  "HR / Recruitment", "Design / Creative", "Non-profit", "Other",
+];
+
+const TARGET_ROLES = [
+  "Hiring Manager / Recruiter", "CTO / Technical Leader", "CEO / Founder",
+  "Product Manager", "Software Engineer", "Data Scientist",
+  "Marketing Manager", "Sales Leader", "B2B Clients",
+  "Investors / VCs", "Freelance Clients", "Career Changers", "Other",
+];
 
 export default function AnalyzePage() {
   const router = useRouter();
@@ -198,30 +213,38 @@ export default function AnalyzePage() {
             {/* Optional fields */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="industry" className="text-xs font-medium text-slate-400">
+                <Label className="text-xs font-medium text-slate-400">
                   {t("industryLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
                 </Label>
-                <Input
-                  id="industry"
-                  placeholder={t("industryPlaceholder")}
-                  value={industry}
-                  onChange={(e) => setIndustry(e.target.value)}
-                  className="bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 text-sm h-9 rounded-lg"
-                  disabled={loading}
-                />
+                <Select value={industry} onValueChange={(v) => setIndustry(v ?? "")} disabled={loading}>
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 focus:border-blue-500 focus:ring-blue-500/20 h-9 text-sm rounded-lg">
+                    <SelectValue placeholder={t("industryPlaceholder")} className="text-slate-600" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-900 border-slate-700">
+                    {INDUSTRIES.map((item) => (
+                      <SelectItem key={item} value={item} className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="target" className="text-xs font-medium text-slate-400">
+                <Label className="text-xs font-medium text-slate-400">
                   {t("targetLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
                 </Label>
-                <Input
-                  id="target"
-                  placeholder={t("targetPlaceholder")}
-                  value={targetRole}
-                  onChange={(e) => setTargetRole(e.target.value)}
-                  className="bg-slate-900 border-slate-700 text-slate-200 placeholder:text-slate-600 focus:border-blue-500 text-sm h-9 rounded-lg"
-                  disabled={loading}
-                />
+                <Select value={targetRole} onValueChange={(v) => setTargetRole(v ?? "")} disabled={loading}>
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 focus:border-blue-500 focus:ring-blue-500/20 h-9 text-sm rounded-lg">
+                    <SelectValue placeholder={t("targetPlaceholder")} className="text-slate-600" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-900 border-slate-700">
+                    {TARGET_ROLES.map((item) => (
+                      <SelectItem key={item} value={item} className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

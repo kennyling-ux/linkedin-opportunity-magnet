@@ -217,12 +217,16 @@ export default function AnalyzePage() {
                   {t("industryLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
                 </Label>
                 <Select value={industry} onValueChange={(v) => setIndustry(v ?? "")} disabled={loading}>
-                  <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 focus:border-blue-500 focus:ring-blue-500/20 h-9 text-sm rounded-lg">
-                    <SelectValue placeholder={t("industryPlaceholder")} className="text-slate-600" />
+                  <SelectTrigger className="w-full bg-slate-900 border-slate-700 text-slate-200 data-[placeholder]:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 h-9 text-sm rounded-lg">
+                    <SelectValue placeholder={t("industryPlaceholder")} />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectContent className="bg-slate-900 border-slate-800 shadow-xl z-50 max-h-64 overflow-y-auto">
                     {INDUSTRIES.map((item) => (
-                      <SelectItem key={item} value={item} className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                      <SelectItem
+                        key={item}
+                        value={item}
+                        className="text-slate-300 text-sm py-2 px-3 cursor-pointer rounded-md hover:bg-slate-700 hover:text-white focus:bg-blue-600 focus:text-white data-[highlighted]:bg-slate-700 data-[highlighted]:text-white"
+                      >
                         {item}
                       </SelectItem>
                     ))}
@@ -234,12 +238,16 @@ export default function AnalyzePage() {
                   {t("targetLabel")} <span className="text-slate-600">({t("industryOptional")})</span>
                 </Label>
                 <Select value={targetRole} onValueChange={(v) => setTargetRole(v ?? "")} disabled={loading}>
-                  <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 focus:border-blue-500 focus:ring-blue-500/20 h-9 text-sm rounded-lg">
-                    <SelectValue placeholder={t("targetPlaceholder")} className="text-slate-600" />
+                  <SelectTrigger className="w-full bg-slate-900 border-slate-700 text-slate-200 data-[placeholder]:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 h-9 text-sm rounded-lg">
+                    <SelectValue placeholder={t("targetPlaceholder")} />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectContent className="bg-slate-900 border-slate-800 shadow-xl z-50 max-h-64 overflow-y-auto">
                     {TARGET_ROLES.map((item) => (
-                      <SelectItem key={item} value={item} className="text-slate-200 focus:bg-slate-800 focus:text-white">
+                      <SelectItem
+                        key={item}
+                        value={item}
+                        className="text-slate-300 text-sm py-2 px-3 cursor-pointer rounded-md hover:bg-slate-700 hover:text-white focus:bg-blue-600 focus:text-white data-[highlighted]:bg-slate-700 data-[highlighted]:text-white"
+                      >
                         {item}
                       </SelectItem>
                     ))}

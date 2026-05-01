@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60; // Vercel max on hobby plan (seconds)
+
 interface ApifyDate {
   year?: number;
   month?: number;

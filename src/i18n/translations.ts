@@ -36,7 +36,72 @@ export const translations = {
   navCredibility: { zh: "Credibility", en: "Credibility" },
   navScores: { zh: "Scores & Positioning", en: "Scores & Positioning" },
 
+  // ── Global nav / UI labels ───────────────────────────────────────
+  navPricing:       { zh: "定價", en: "Pricing" },
+  navBlog:          { zh: "部落格", en: "Blog" },
+  navSignIn:        { zh: "登入", en: "Sign in" },
+  navTryFree:       { zh: "免費試用", en: "Try Free" },
+  navAnalyze:       { zh: "分析", en: "Analyze" },
+  freeBadge:        { zh: "免費", en: "Free" },
+  proBadge:         { zh: "Pro", en: "Pro" },
+  seePricing:       { zh: "查看方案", en: "See pricing" },
+  analyzeFreeBtn:   { zh: "免費分析", en: "Analyze free" },
+  viewAllPlans:     { zh: "查看所有方案", en: "View all plans" },
+  sidebarUpgrade:   { zh: "升級為 Pro", en: "Upgrade to Pro" },
+  sidebarUnlock:    { zh: "解鎖所有引擎", en: "Unlock all engines" },
+
   // ── Landing page ─────────────────────────────────────────────────
+  // Stats bar
+  stat1Val:   { zh: "2,400+", en: "2,400+" },
+  stat1Label: { zh: "個人檔案已分析", en: "Profiles analyzed" },
+  stat2Val:   { zh: "3×", en: "3×" },
+  stat2Label: { zh: "平均頁面瀏覽提升", en: "Avg. profile view increase" },
+  stat3Val:   { zh: "94%", en: "94%" },
+  stat3Label: { zh: "找到新機會", en: "Found new opportunities" },
+  stat4Val:   { zh: "< 60s", en: "< 60s" },
+  stat4Label: { zh: "取得評分", en: "To get your score" },
+
+  // Hero badges & trust
+  aiBadge:       { zh: "AI 驅動的 LinkedIn 優化工具", en: "AI-Powered LinkedIn Optimizer" },
+  trustFreeStart: { zh: "免費開始", en: "Free to start" },
+
+  // Section headers
+  sectionHowItWorks:    { zh: "使用方法", en: "How it works" },
+  sectionHowItWorksSub: { zh: "從貼上到洞察，60 秒搞定", en: "From paste to insights in 60 seconds" },
+  sectionWhatYouGet:    { zh: "你能獲得什麼", en: "What you get" },
+  sectionTestimonials:     { zh: "用戶評價", en: "What people say" },
+  sectionTestimonialsSub:  { zh: "真實專業人士的真實成果", en: "Real results from real professionals" },
+
+  // Feature tags
+  tagVisibility:  { zh: "曝光度評分", en: "Visibility Score" },
+  tagPositioning: { zh: "定位引擎", en: "Positioning Engine" },
+  tagContent:     { zh: "內容引擎", en: "Content Engine" },
+  tagCredibility: { zh: "可信度引擎", en: "Credibility Engine" },
+
+  // Hero product preview labels
+  previewOppLevel:       { zh: "機會吸引力", en: "Opportunity Level" },
+  previewMedium:         { zh: "中等", en: "Medium" },
+  previewTopImprov:      { zh: "主要改善項目", en: "Top improvements" },
+  previewImp1:           { zh: "在工作經歷中加入量化成果", en: "Add quantified results to experience" },
+  previewImp2:           { zh: "重寫 Headline 鎖定特定受眾", en: "Rewrite headline to target specific audience" },
+  previewImp3:           { zh: "索取 3 封推薦信", en: "Request 3 recommendations" },
+
+  // Pricing teaser
+  pricingTeaserBadge:  { zh: "免費開始", en: "Free to start" },
+  pricingTeaserTitle:  { zh: "免費開始。準備好了再升級。", en: "Start free. Upgrade when you're ready." },
+  pricingTeaserSub:    { zh: "整體評分和缺口摘要永遠免費。升級 Pro 解鎖 AI 重寫、貼文生成和職涯定位。", en: "Your overall score and gap summary are always free. Upgrade to Pro to unlock AI-generated rewrites, post ideas, and career positioning." },
+  featureOverallScore: { zh: "整體評分", en: "Overall score" },
+  featureGapAnalysis:  { zh: "缺口分析", en: "Gap analysis" },
+  featureAIProfile:    { zh: "AI 個人檔案重寫", en: "AI profile rewrite" },
+  featurePostGen:      { zh: "貼文生成器", en: "Post generator" },
+  featureCaseStudy:    { zh: "案例研究生成器", en: "Case study builder" },
+
+  // CTA section
+  ctaJoin: { zh: "加入 2,400+ 位已優化個人檔案的專業人士", en: "Join 2,400+ professionals who've optimized their profiles" },
+
+  // Footer
+  footerNoData: { zh: "資料不儲存", en: "No data stored" },
+
   heroTitle1: { zh: "讓 LinkedIn", en: "Turn LinkedIn Into" },
   heroTitle2: { zh: "主動吸引機會", en: "an Luminary" },
   heroSub: {

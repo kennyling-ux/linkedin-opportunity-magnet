@@ -80,3 +80,54 @@
     @apply font-sans;
   }
 }
+
+/* ── Animations ────────────────────────────────────────────── */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59,130,246,0.45),
+                0 10px 30px rgba(59,130,246,0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(59,130,246,0),
+                0 16px 40px rgba(59,130,246,0.40);
+  }
+}
+
+@keyframes breathe-amber {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245,158,11,0.40),
+                0 10px 30px rgba(245,158,11,0.20);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(245,158,11,0),
+                0 16px 40px rgba(245,158,11,0.35);
+  }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-float     { animation: float 4s ease-in-out infinite; }
+.animate-breathe   { animation: breathe 2.8s ease-in-out infinite; }
+.animate-breathe-amber { animation: breathe-amber 2.8s ease-in-out infinite; }
+.animate-fade-in-up { animation: fadeInUp 0.6s ease both; }
+.animate-fade-in    { animation: fadeIn 0.5s ease both; }
+.animate-slide-in-left { animation: slideInLeft 0.5s ease both; }

@@ -45,8 +45,10 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all",
-                active ? "bg-slate-950 text-white" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150",
+                active
+                  ? "bg-slate-950 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:translate-x-0.5"
               )}
             >
               <Icon className={cn("w-4 h-4 shrink-0", active ? "text-white" : "text-slate-400")} />
@@ -64,12 +66,12 @@ export function Sidebar() {
         <div className="mx-3 mb-2">
           <Link
             href="/pricing"
-            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/5 border border-amber-500/20 hover:border-amber-500/40 transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/5 border border-amber-500/20 hover:border-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <div className="leading-tight">
-              <p className="text-xs font-semibold text-amber-600">Upgrade to Pro</p>
-              <p className="text-[10px] text-slate-500">Unlock all engines</p>
+              <p className="text-xs font-semibold text-amber-600">{t("sidebarUpgrade")}</p>
+              <p className="text-[10px] text-slate-500">{t("sidebarUnlock")}</p>
             </div>
           </Link>
         </div>
@@ -81,7 +83,7 @@ export function Sidebar() {
             {isSignedIn ? (
             <UserButton />
           ) : (
-            <Link href="/sign-in" className="text-xs text-slate-500 hover:text-slate-700 transition-colors">Sign in</Link>
+            <Link href="/sign-in" className="text-xs text-slate-500 hover:text-slate-700 transition-colors">{t("navSignIn")}</Link>
           )}
           <LanguageSwitcher variant="light" />
         </div>

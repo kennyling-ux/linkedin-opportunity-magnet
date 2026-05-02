@@ -24,7 +24,7 @@ export default function ContentPage() {
   const isPro = useIsPro();
 
   useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
-  if (isPro === null) return null;
+  if (isPro === null || !analysis) return null;
   if (!isPro) return <ProGate feature="Content Engine" desc="Generate 30 tailored topic ideas and AI-written posts in your tone of voice." />;
 
   const toneOptions: { value: PostTone; label: string; desc: string }[] = [

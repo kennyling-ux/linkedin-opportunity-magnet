@@ -20,7 +20,7 @@ export default function ProfilePage() {
   const isPro = useIsPro();
 
   useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
-  if (isPro === null) return null;
+  if (isPro === null || !analysis) return null;
   if (!isPro) return <ProGate feature="Profile Engine" desc="Generate AI-written headline variants, an optimized About section, and experience rewrites." />;
 
   const styleLabels: Record<HeadlineVariant["style"], { label: string; desc: string; color: string }> = {

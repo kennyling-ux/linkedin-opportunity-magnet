@@ -20,7 +20,7 @@ export default function ScoresPage() {
   const isPro = useIsPro();
 
   useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
-  if (isPro === null) return null;
+  if (isPro === null || !analysis) return null;
   if (!isPro) return <ProGate feature="Scores & Positioning" desc="See your full 4-dimension breakdown and get AI career direction advice." />;
 
   const { scores, suggestedTargetRoles } = analysis;

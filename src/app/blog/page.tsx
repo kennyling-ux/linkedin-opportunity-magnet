@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Zap, ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { BLOG_POSTS } from "@/lib/blog-posts";
+import { Navbar } from "@/components/Navbar";
 
 const CATEGORY_COLORS: Record<string, string> = {
   Visibility: "bg-blue-500/10 text-blue-400 border-blue-500/20",
@@ -11,24 +12,9 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function BlogPage() {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
-      {/* Nav */}
-      <header className="border-b border-slate-800/60 px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold text-white text-sm">Luminary</span>
-        </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link href="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
-          <Link href="/sign-in" className="text-slate-400 hover:text-white transition-colors">Sign in</Link>
-          <Link href="/analyze" className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium text-xs transition-colors">
-            Try Free
-          </Link>
-        </nav>
-      </header>
+      <Navbar variant="dark" />
 
-      <main className="flex-1 max-w-5xl mx-auto px-6 py-16 w-full">
+      <main className="flex-1 max-w-5xl mx-auto px-6 py-16 pt-28 w-full">
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">LinkedIn Growth Blog</h1>
           <p className="text-slate-400 text-base">Practical strategies to make your LinkedIn profile work harder for you.</p>

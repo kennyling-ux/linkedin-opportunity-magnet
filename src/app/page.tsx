@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { ArrowRight, Zap, BarChart2, FileText, Award, TrendingUp, Sparkles, Users, Star, Check, Lock } from "lucide-react";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { Navbar } from "@/components/Navbar";
 import { CountUp } from "@/components/CountUp";
 
 // Testimonials stay bilingual (real names/quotes — brand asset)
@@ -22,7 +21,6 @@ const TESTIMONIALS_ZH = [
 
 export default function LandingPage() {
   const { t, lang } = useLanguage();
-  const { isSignedIn } = useUser();
   const heroRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
@@ -58,39 +56,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-950">
 
-      {/* Nav */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/60 bg-slate-950/90 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-              <Zap className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-white text-sm tracking-tight">{t("brand")}</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6 text-sm">
-            <Link href="/pricing" className="text-slate-400 hover:text-white transition-colors duration-150">{t("navPricing")}</Link>
-            <Link href="/blog" className="text-slate-400 hover:text-white transition-colors duration-150">{t("navBlog")}</Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <LanguageSwitcher variant="dark" />
-            {isSignedIn ? (
-              <>
-                <UserButton />
-                <Link href="/analyze" className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-xs transition-all duration-150 shadow-md shadow-blue-500/20 hover:scale-[1.04]">
-                  {t("startAnalysis")}
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/sign-in" className="text-slate-400 hover:text-white text-xs transition-colors duration-150">{t("navSignIn")}</Link>
-                <Link href="/analyze" className="px-4 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-xs transition-all duration-150 shadow-md shadow-blue-500/20 hover:scale-[1.04]">
-                  {t("navTryFree")}
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar variant="dark" />
 
       {/* Hero */}
       <section className="relative overflow-hidden pt-14">

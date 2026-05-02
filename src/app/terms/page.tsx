@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Zap, Lock } from "lucide-react";
+import { Lock, Zap } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
 
 export const metadata = {
   title: "Terms & Conditions — Luminary",
@@ -9,20 +10,9 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
-      <header className="border-b border-slate-800/60 px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold text-white text-sm">Luminary</span>
-        </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link href="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
-          <Link href="/blog" className="text-slate-400 hover:text-white transition-colors">Blog</Link>
-        </nav>
-      </header>
+      <Navbar variant="dark" />
 
-      <main className="flex-1 max-w-3xl mx-auto px-6 py-16">
+      <main className="flex-1 max-w-3xl mx-auto px-6 py-16 pt-28">
         <h1 className="text-3xl font-bold text-white mb-2">Terms & Conditions</h1>
         <p className="text-slate-500 text-sm mb-12">Last updated: May 2026</p>
 

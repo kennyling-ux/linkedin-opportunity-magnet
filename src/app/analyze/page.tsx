@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useApp } from "@/context/AppContext";
-import { Zap, ArrowRight, Lock, Clock, Sparkles, Download, CheckCircle2, ChevronDown, Check } from "lucide-react";
+import { ArrowRight, Lock, Clock, Sparkles, Download, CheckCircle2, ChevronDown, Check, Zap } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Navbar } from "@/components/Navbar";
+import { ProgressBar } from "@/components/ProgressBar";
 
 const INDUSTRIES = [
   "SaaS / Software", "FinTech", "Consulting", "Marketing / Advertising",
@@ -168,18 +168,10 @@ export default function AnalyzePage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
-      {/* Nav */}
-      <header className="border-b border-slate-800/60 px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold text-white text-sm">{t("brand")}</span>
-        </Link>
-        <LanguageSwitcher variant="dark" />
-      </header>
+      <ProgressBar loading={loading} />
+      <Navbar variant="dark" />
 
-      <main className="flex-1 flex items-start justify-center py-14 px-6">
+      <main className="flex-1 flex items-start justify-center py-14 pt-28 px-6">
         <div className="w-full max-w-xl">
 
           {/* Header */}

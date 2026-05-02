@@ -10,14 +10,18 @@ import { Zap, User, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import type { HeadlineVariant } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
+import { useIsPro, ProGate } from "@/components/PaywallGate";
 
 export default function ProfilePage() {
   const { input, profile, setProfile, analysis } = useApp();
   const router = useRouter();
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const isPro = useIsPro();
 
   if (!analysis) { router.replace("/analyze"); return null; }
+  if (isPro === null) return null;
+  if (!isPro) return <ProGate feature="Profile Engine" desc="Generate AI-written headline variants, an optimized About section, and experience rewrites." />;
 
   const styleLabels: Record<HeadlineVariant["style"], { label: string; desc: string; color: string }> = {
     authority: { label: t("styleAuthority"), desc: t("styleAuthorityDesc"), color: "bg-blue-50 text-blue-700 border-blue-200" },

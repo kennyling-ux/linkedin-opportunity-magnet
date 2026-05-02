@@ -10,14 +10,18 @@ import { ScoreRing } from "@/components/ScoreRing";
 import { Zap, TrendingUp, RefreshCw, Target, Briefcase, BookOpen, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
+import { useIsPro, ProGate } from "@/components/PaywallGate";
 
 export default function ScoresPage() {
   const { input, analysis, positioning, setPositioning } = useApp();
   const router = useRouter();
   const { t, tArr } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const isPro = useIsPro();
 
   if (!analysis) { router.replace("/analyze"); return null; }
+  if (isPro === null) return null;
+  if (!isPro) return <ProGate feature="Scores & Positioning" desc="See your full 4-dimension breakdown and get AI career direction advice." />;
 
   const { scores, suggestedTargetRoles } = analysis;
 

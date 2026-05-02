@@ -10,6 +10,7 @@ import { Zap, FileText, RefreshCw, BookmarkPlus, Bookmark } from "lucide-react";
 import { toast } from "sonner";
 import type { PostTone, PostTopic } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
+import { useIsPro, ProGate } from "@/components/PaywallGate";
 
 export default function ContentPage() {
   const { input, topics, setTopics, drafts, addDraft, removeDraft, analysis } = useApp();
@@ -20,8 +21,11 @@ export default function ContentPage() {
   const [tone, setTone] = useState<PostTone>("professional");
   const [selectedTopic, setSelectedTopic] = useState<PostTopic | null>(null);
   const [generatedPost, setGeneratedPost] = useState<string>("");
+  const isPro = useIsPro();
 
   if (!analysis) { router.replace("/analyze"); return null; }
+  if (isPro === null) return null;
+  if (!isPro) return <ProGate feature="Content Engine" desc="Generate 30 tailored topic ideas and AI-written posts in your tone of voice." />;
 
   const toneOptions: { value: PostTone; label: string; desc: string }[] = [
     { value: "professional", label: t("tonePro"), desc: t("toneProDesc") },

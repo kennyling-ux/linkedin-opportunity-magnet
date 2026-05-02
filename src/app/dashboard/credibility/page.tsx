@@ -9,6 +9,7 @@ import { CopyButton } from "@/components/CopyButton";
 import { Zap, Award, RefreshCw, AlertTriangle, Users, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
+import { useIsPro, ProGate } from "@/components/PaywallGate";
 
 export default function CredibilityPage() {
   const { input, credibility, setCredibility, analysis } = useApp();
@@ -16,8 +17,11 @@ export default function CredibilityPage() {
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [expandedCase, setExpandedCase] = useState<number | null>(0);
+  const isPro = useIsPro();
 
   if (!analysis) { router.replace("/analyze"); return null; }
+  if (isPro === null) return null;
+  if (!isPro) return <ProGate feature="Credibility Engine" desc="Extract AI-written case studies from your experience and identify credibility gaps." />;
 
   async function generate() {
     if (!input) return;

@@ -4,32 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { Zap, ChevronDown, ArrowRight, BookOpen, Sparkles, HelpCircle, FileText } from "lucide-react";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
 import { UserButton, useUser } from "@clerk/nextjs";
 
-const RESOURCES_EN = [
-  { href: "/blog",       icon: BookOpen,   label: "Blog",         desc: "Tips & strategies" },
-  { href: "/changelog",  icon: Sparkles,   label: "What's New",   desc: "Latest updates" },
-  { href: "/help",       icon: HelpCircle, label: "Help & FAQ",   desc: "Common questions" },
-  { href: "/terms",      icon: FileText,   label: "Terms",        desc: "Policies & refund" },
-];
-
-const RESOURCES_ZH = [
-  { href: "/blog",       icon: BookOpen,   label: "部落格",        desc: "技巧與策略" },
-  { href: "/changelog",  icon: Sparkles,   label: "最新動態",      desc: "功能更新記錄" },
-  { href: "/help",       icon: HelpCircle, label: "幫助與常見問題", desc: "常見問題解答" },
-  { href: "/terms",      icon: FileText,   label: "條款",          desc: "政策與退款" },
+const RESOURCES = [
+  { href: "/blog",       icon: BookOpen,   label: "Blog",       desc: "Tips & strategies" },
+  { href: "/changelog",  icon: Sparkles,   label: "What's New", desc: "Latest updates" },
+  { href: "/help",       icon: HelpCircle, label: "Help & FAQ", desc: "Common questions" },
+  { href: "/terms",      icon: FileText,   label: "Terms",      desc: "Policies & refund" },
 ];
 
 export function Navbar({ variant = "dark" }: { variant?: "dark" | "light" }) {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const { isSignedIn } = useUser();
   const pathname = usePathname();
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const RESOURCES = lang === "zh" ? RESOURCES_ZH : RESOURCES_EN;
 
   const isDark = variant === "dark";
   const bg = isDark ? "bg-slate-950/90 border-slate-800/60" : "bg-white/90 border-slate-200/80";
@@ -64,18 +54,17 @@ export function Navbar({ variant = "dark" }: { variant?: "dark" | "light" }) {
 
         {/* Center nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {/* Resources dropdown */}
           <div ref={dropdownRef} className="relative">
             <button
               onClick={() => setResourcesOpen((o) => !o)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${navText}`}
             >
-              {lang === "zh" ? "資源" : "Resources"}
+              Resources
               <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${resourcesOpen ? "rotate-180" : ""}`} />
             </button>
 
             {resourcesOpen && (
-              <div className={`absolute top-full mt-1 left-0 w-56 rounded-xl border shadow-2xl shadow-black/20 overflow-hidden ${dropdownBg}`}>
+              <div className={`absolute top-full mt-1 left-0 w-52 rounded-xl border shadow-2xl shadow-black/20 overflow-hidden ${dropdownBg}`}>
                 <div className="p-1.5">
                   {RESOURCES.map(({ href, icon: Icon, label, desc }) => (
                     <Link
@@ -105,7 +94,6 @@ export function Navbar({ variant = "dark" }: { variant?: "dark" | "light" }) {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
-          <LanguageSwitcher variant={variant} />
           {isSignedIn ? (
             <>
               <UserButton />

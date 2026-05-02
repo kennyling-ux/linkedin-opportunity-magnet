@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, User, FileText, Award, TrendingUp, Zap, Plus, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useIsPro } from "@/components/PaywallGate";
 
@@ -79,13 +78,12 @@ export function Sidebar() {
 
       {/* Bottom */}
       <div className="px-3 py-4 border-t border-slate-100 space-y-2">
-        <div className="flex items-center justify-between">
-            {isSignedIn ? (
+        <div className="flex items-center">
+          {isSignedIn ? (
             <UserButton />
           ) : (
             <Link href="/sign-in" className="text-xs text-slate-500 hover:text-slate-700 transition-colors">{t("navSignIn")}</Link>
           )}
-          <LanguageSwitcher variant="light" />
         </div>
         <Link
           href="/analyze"

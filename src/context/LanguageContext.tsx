@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import type { Lang } from "@/i18n/translations";
+import { createContext, useContext, ReactNode } from "react";
+import type { Lang, TranslationKey } from "@/i18n/translations";
 import { t, tArr } from "@/i18n/translations";
-import type { TranslationKey } from "@/i18n/translations";
+
+const LANG: Lang = "en";
 
 interface LanguageContextValue {
   lang: Lang;
@@ -15,28 +16,13 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("zh");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("om_lang") as Lang | null;
-    if (saved === "en" || saved === "zh") setLang(saved);
-  }, []);
-
-  function toggle() {
-    setLang((prev) => {
-      const next: Lang = prev === "zh" ? "en" : "zh";
-      localStorage.setItem("om_lang", next);
-      return next;
-    });
-  }
-
   return (
     <LanguageContext.Provider
       value={{
-        lang,
-        toggle,
-        t: (key) => t(key, lang),
-        tArr: (key) => tArr(key, lang),
+        lang: LANG,
+        toggle: () => {},
+        t: (key) => t(key, LANG),
+        tArr: (key) => tArr(key, LANG),
       }}
     >
       {children}

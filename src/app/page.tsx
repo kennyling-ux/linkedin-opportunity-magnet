@@ -13,18 +13,13 @@ const TESTIMONIALS_EN = [
   { quote: "The credibility engine helped me articulate case studies I've been sitting on for years. My profile finally reflects what I actually do.", name: "James T.", role: "Independent Consultant", avatar: "JT" },
   { quote: "My positioning score went from 42 to 81 in two weeks. Got my first inbound client DM two days after.", name: "Michelle C.", role: "Brand Strategist", avatar: "MC" },
 ];
-const TESTIMONIALS_ZH = [
-  { quote: "優化 Headline 後，我從零到每週收到 3 封招募訊息。", name: "Sarah K.", role: "資深產品經理", avatar: "SK" },
-  { quote: "Credibility Engine 幫我整理了多年來一直說不清楚的案例研究，個人頁面終於真實反映我的實力。", name: "James T.", role: "獨立顧問", avatar: "JT" },
-  { quote: "兩週內定位評分從 42 跳到 81，兩天後收到第一封客戶主動私訊。", name: "Michelle C.", role: "品牌策略師", avatar: "MC" },
-];
 
 export default function LandingPage() {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
-  const TESTIMONIALS = lang === "zh" ? TESTIMONIALS_ZH : TESTIMONIALS_EN;
+  const TESTIMONIALS = TESTIMONIALS_EN;
 
   const features = [
     { icon: BarChart2, titleKey: "f1Title" as const, descKey: "f1Desc" as const, tagKey: "tagVisibility" as const, accent: "from-blue-500/15 to-transparent", border: "border-blue-500/20", iconColor: "text-blue-400", tagColor: "text-blue-400" },

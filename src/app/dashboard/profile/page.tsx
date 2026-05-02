@@ -21,7 +21,7 @@ export default function ProfilePage() {
 
   useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
   if (isPro === null || !analysis) return null;
-  if (!isPro) return <ProGate feature="Profile Engine" desc="Generate AI-written headline variants, an optimized About section, and experience rewrites." />;
+  if (!isPro) return <ProGate feature={t("profileTitle")} desc={t("proGateProfileDesc")} />;
 
   const styleLabels: Record<HeadlineVariant["style"], { label: string; desc: string; color: string }> = {
     authority: { label: t("styleAuthority"), desc: t("styleAuthorityDesc"), color: "bg-blue-50 text-blue-700 border-blue-200" },
@@ -62,7 +62,7 @@ export default function ProfilePage() {
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-8 text-center space-y-4">
           <p className="text-slate-600">{t("profileGenDesc")}</p>
-          <Button onClick={generate} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white h-11 px-8">
+          <Button onClick={generate} disabled={loading} className="bg-blue-600 hover:bg-blue-500 active:scale-[0.97] hover:scale-[1.02] text-white h-11 px-8 transition-all duration-150 shadow-lg shadow-blue-600/25 hover:shadow-blue-500/40">
             {loading ? (
               <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />{t("generating")}</>
             ) : (

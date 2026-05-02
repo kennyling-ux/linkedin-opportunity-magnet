@@ -21,7 +21,7 @@ export default function CredibilityPage() {
 
   useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
   if (isPro === null || !analysis) return null;
-  if (!isPro) return <ProGate feature="Credibility Engine" desc="Extract AI-written case studies from your experience and identify credibility gaps." />;
+  if (!isPro) return <ProGate feature={t("credTitle")} desc={t("proGateCredDesc")} />;
 
   async function generate() {
     if (!input) return;
@@ -60,7 +60,7 @@ export default function CredibilityPage() {
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-8 text-center space-y-4">
           <p className="text-slate-600">{t("credGenDesc")}</p>
-          <Button onClick={generate} disabled={loading} className="bg-violet-600 hover:bg-violet-700 text-white h-11 px-8">
+          <Button onClick={generate} disabled={loading} className="bg-violet-600 hover:bg-violet-500 active:scale-[0.97] hover:scale-[1.02] text-white h-11 px-8 transition-all duration-150 shadow-lg shadow-violet-600/25 hover:shadow-violet-500/40">
             {loading ? (
               <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />{t("generating")}</>
             ) : (

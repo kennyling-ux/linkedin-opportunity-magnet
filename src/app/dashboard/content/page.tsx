@@ -25,7 +25,7 @@ export default function ContentPage() {
 
   useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
   if (isPro === null || !analysis) return null;
-  if (!isPro) return <ProGate feature="Content Engine" desc="Generate 30 tailored topic ideas and AI-written posts in your tone of voice." />;
+  if (!isPro) return <ProGate feature={t("contentEngineTitle")} desc={t("proGateContentDesc")} />;
 
   const toneOptions: { value: PostTone; label: string; desc: string }[] = [
     { value: "professional", label: t("tonePro"), desc: t("toneProDesc") },
@@ -139,7 +139,7 @@ export default function ContentPage() {
       {topics.length === 0 ? (
         <div className="bg-white rounded-xl border border-slate-200 p-10 text-center space-y-4">
           <p className="text-slate-600">{t("genTopicsDesc")}</p>
-          <Button onClick={generateTopics} disabled={loadingTopics} className="bg-indigo-600 hover:bg-indigo-700 text-white h-11 px-8">
+          <Button onClick={generateTopics} disabled={loadingTopics} className="bg-indigo-600 hover:bg-indigo-500 active:scale-[0.97] hover:scale-[1.02] text-white h-11 px-8 transition-all duration-150 shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/40">
             {loadingTopics ? (
               <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />{t("generating")}</>
             ) : (

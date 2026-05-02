@@ -3,6 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Lock, Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function useIsPro(): boolean | null {
   const { user, isLoaded } = useUser();
@@ -18,6 +19,7 @@ interface PaywallGateProps {
 }
 
 export function ProGate({ feature, desc }: { feature: string; desc: string }) {
+  const { t } = useLanguage();
   return (
     <div className="flex-1 flex items-center justify-center p-16">
       <div className="text-center max-w-sm">
@@ -28,15 +30,15 @@ export function ProGate({ feature, desc }: { feature: string; desc: string }) {
         <p className="text-slate-500 text-sm mb-6 leading-relaxed">{desc}</p>
         <Link
           href="/pricing"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/35 transition-all"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/35 hover:scale-[1.03] active:scale-[0.97] transition-all duration-150"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          Upgrade to Pro
+          {t("proGateUpgrade")}
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
         <p className="text-slate-400 text-xs mt-3">
-          Already have Pro?{" "}
-          <Link href="/sign-in" className="text-blue-500 hover:underline">Sign in</Link>
+          {t("proGateSignIn")}{" "}
+          <Link href="/sign-in" className="text-blue-500 hover:underline">{t("proGateSignInLink")}</Link>
         </p>
       </div>
     </div>

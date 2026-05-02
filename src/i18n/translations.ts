@@ -235,6 +235,15 @@ export const translations = {
     en: ["State who you serve and what outcome you deliver in the Headline", "Lead with your core positioning in the first line of About", "Choose one primary niche — avoid spreading too thin"],
   },
 
+  // ── ProGate strings ──────────────────────────────────────────────
+  proGateUpgrade: { zh: "升級為 Pro", en: "Upgrade to Pro" },
+  proGateSignIn: { zh: "已有 Pro？", en: "Already have Pro?" },
+  proGateSignInLink: { zh: "登入", en: "Sign in" },
+  proGateScoresDesc: { zh: "查看完整 4 維度分析報告，以及 AI 職涯定位建議。", en: "See your full 4-dimension breakdown and get AI career direction advice." },
+  proGateProfileDesc: { zh: "生成 AI 優化的 Headline、About 區塊與 Experience 重寫。", en: "Generate AI-written headline variants, an optimized About section, and experience rewrites." },
+  proGateContentDesc: { zh: "生成 30 個專屬貼文主題，以及你語氣風格的 AI 完整貼文。", en: "Generate 30 tailored topic ideas and AI-written posts in your tone of voice." },
+  proGateCredDesc: { zh: "從工作經歷中提取 AI 撰寫的案例研究，並識別可信度缺口。", en: "Extract AI-written case studies from your experience and identify credibility gaps." },
+
   // ── Error/success toasts ─────────────────────────────────────────
   errGenFail: { zh: "生成失敗，請重試", en: "Generation failed, please retry" },
 } as const;

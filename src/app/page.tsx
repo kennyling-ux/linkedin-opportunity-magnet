@@ -88,10 +88,10 @@ export default function LandingPage() {
               </h1>
               <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-md">{t("heroSub")}</p>
               <div className="flex flex-wrap gap-3 mb-6">
-                <Link href="/analyze" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-semibold transition-all shadow-xl shadow-blue-500/25">
+                <Link href="/analyze" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold transition-all duration-150 shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03]">
                   {t("startAnalysis")} <ArrowRight className="w-4 h-4" />
                 </Link>
-                <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white font-semibold transition-colors text-sm">
+                <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-700 hover:border-blue-500/50 text-slate-300 hover:text-white font-semibold transition-all duration-150 text-sm hover:bg-blue-500/5">
                   See pricing
                 </Link>
               </div>
@@ -178,7 +178,7 @@ export default function LandingPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {([t("step1"), t("step2"), t("step3"), t("step4")] as string[]).map((text, i) => (
             <div key={i} className="relative">
-              {i < 3 && <div className="hidden md:block absolute top-5 left-full w-full h-px border-t border-dashed border-slate-800 z-0" />}
+              {i < 3 && <div className="hidden md:block absolute top-5 left-full w-full h-px z-0" />}
               <div className="relative z-10 flex flex-col gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-sm">
                   {String(i + 1).padStart(2, "0")}
@@ -270,10 +270,10 @@ export default function LandingPage() {
             ))}
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href="/analyze" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-semibold transition-all shadow-xl shadow-blue-500/25">
+            <Link href="/analyze" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold transition-all duration-150 shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03]">
               Analyze free <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white font-semibold transition-colors text-sm">
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-700 hover:border-blue-500/50 text-slate-300 hover:text-white font-semibold transition-all duration-150 text-sm hover:bg-blue-500/5">
               View all plans
             </Link>
           </div>
@@ -292,7 +292,7 @@ export default function LandingPage() {
           </div>
           <h2 className="text-4xl font-bold text-white mb-4 tracking-tight">{t("ctaTitle")}</h2>
           <p className="text-slate-400 text-base mb-8 leading-relaxed">{t("ctaSub")}</p>
-          <Link href="/analyze" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-semibold text-base transition-all shadow-2xl shadow-blue-500/30">
+          <Link href="/analyze" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-base transition-all duration-150 shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02]">
             {t("ctaBtn")} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

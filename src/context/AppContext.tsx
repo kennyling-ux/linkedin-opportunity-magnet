@@ -68,7 +68,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setPositioning: (positioning) => persist({ positioning }),
         setIsAnalyzing: (isAnalyzing) => setState((p) => ({ ...p, isAnalyzing })),
         reset: () => {
-          localStorage.removeItem(STORAGE_KEY);
+          if (typeof window !== "undefined") localStorage.removeItem(STORAGE_KEY);
           setState(defaultState);
         },
       }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export default function ContentPage() {
   const [generatedPost, setGeneratedPost] = useState<string>("");
   const isPro = useIsPro();
 
-  if (!analysis) { router.replace("/analyze"); return null; }
+  useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
   if (isPro === null) return null;
   if (!isPro) return <ProGate feature="Content Engine" desc="Generate 30 tailored topic ideas and AI-written posts in your tone of voice." />;
 

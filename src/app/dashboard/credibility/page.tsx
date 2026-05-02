@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ export default function CredibilityPage() {
   const [expandedCase, setExpandedCase] = useState<number | null>(0);
   const isPro = useIsPro();
 
-  if (!analysis) { router.replace("/analyze"); return null; }
+  useEffect(() => { if (!analysis) router.replace("/analyze"); }, [analysis, router]);
   if (isPro === null) return null;
   if (!isPro) return <ProGate feature="Credibility Engine" desc="Extract AI-written case studies from your experience and identify credibility gaps." />;
 

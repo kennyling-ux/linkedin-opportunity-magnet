@@ -97,24 +97,28 @@ export function Navbar({ variant = "dark" }: { variant?: "dark" | "light" }) {
           {isSignedIn ? (
             <>
               <UserButton />
-              <Link
-                href="/analyze"
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-xs transition-all duration-150 shadow-md shadow-blue-500/25 hover:scale-[1.04] hover:shadow-blue-500/40"
-              >
-                {t("startAnalysis")} <ArrowRight className="w-3 h-3" />
-              </Link>
+              {pathname !== "/analyze" && (
+                <Link
+                  href="/analyze"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-xs transition-all duration-150 shadow-md shadow-blue-500/25 hover:scale-[1.04] hover:shadow-blue-500/40"
+                >
+                  {t("startAnalysis")} <ArrowRight className="w-3 h-3" />
+                </Link>
+              )}
             </>
           ) : (
             <>
               <Link href="/sign-in" className={`text-sm transition-colors duration-150 ${navText}`}>
                 {t("navSignIn")}
               </Link>
-              <Link
-                href="/analyze"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-sm transition-all duration-150 shadow-md shadow-blue-500/25 hover:scale-[1.04] hover:shadow-blue-500/40"
-              >
-                {t("navTryFree")} <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+              {pathname !== "/analyze" && (
+                <Link
+                  href="/analyze"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-500 hover:bg-blue-400 active:scale-[0.97] text-white font-semibold text-sm transition-all duration-150 shadow-md shadow-blue-500/25 hover:scale-[1.04] hover:shadow-blue-500/40"
+                >
+                  {t("navTryFree")} <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </>
           )}
         </div>

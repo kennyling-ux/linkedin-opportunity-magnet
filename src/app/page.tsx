@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useRef, useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Zap, BarChart2, FileText, Award, TrendingUp, Sparkles, Users, Star, Check, Lock } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/Navbar";
 import { CountUp } from "@/components/CountUp";
+import { useUser } from "@clerk/nextjs";
 
 // Testimonials stay bilingual (real names/quotes — brand asset)
 const TESTIMONIALS_EN = [
@@ -16,8 +18,16 @@ const TESTIMONIALS_EN = [
 
 export default function LandingPage() {
   const { t } = useLanguage();
+  const { isSignedIn, isLoaded } = useUser();
+  const router = useRouter();
   const heroRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.replace("/dashboard");
+    }
+  }, [isLoaded, isSignedIn, router]);
 
   const TESTIMONIALS = TESTIMONIALS_EN;
 

@@ -1,106 +1,82 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const maxDuration = 60; // Vercel max on hobby plan (seconds)
+export const maxDuration = 60;
 
-interface ApifyDate {
-  year?: number;
-  month?: number;
-  text?: string;
-}
-
-interface ApifyExperience {
-  position?: string;
+interface Experience {
+  title?: string;
   companyName?: string;
-  description?: string;
-  startDate?: ApifyDate;
-  endDate?: ApifyDate | null;
+  jobDescription?: string;
+  jobStartedOn?: string;
+  jobEndedOn?: string | null;
+  jobStillWorking?: boolean;
 }
 
-interface ApifyEducation {
-  schoolName?: string;
-  degree?: string;
-  fieldOfStudy?: string;
-  startDate?: ApifyDate;
-  endDate?: ApifyDate;
-  period?: string;
+interface Education {
+  title?: string;
+  subtitle?: string;
+  period?: { startedOn?: string | null; endedOn?: string | null };
 }
 
-interface ApifySkill {
+interface Certificate {
   name?: string;
+  title?: string;
 }
 
-interface ApifyLocation {
-  linkedinText?: string;
-  parsed?: { city?: string; state?: string; country?: string };
-}
-
-interface ApifyProfile {
+interface Profile {
   firstName?: string;
   lastName?: string;
+  fullName?: string;
   headline?: string;
   about?: string;
-  location?: ApifyLocation;
-  experience?: ApifyExperience[];
-  education?: ApifyEducation[];
-  skills?: ApifySkill[] | string[];
-  certifications?: { name?: string }[];
+  addressWithoutCountry?: string;
+  addressCountryOnly?: string;
+  experiences?: Experience[];
+  educations?: Education[];
+  skills?: string[];
+  licenseAndCertificates?: Certificate[];
 }
 
-function formatDate(d?: ApifyDate | null): string {
-  if (!d) return "Present";
-  if (d.text && d.text !== "Present") return d.text;
-  if (!d.year) return "Present";
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  return d.month ? `${months[d.month - 1]} ${d.year}` : String(d.year);
-}
-
-function buildRawContent(p: ApifyProfile): string {
+function buildRawContent(p: Profile): string {
   const sections: string[] = [];
 
-  const name = [p.firstName, p.lastName].filter(Boolean).join(" ");
+  const name = p.fullName || [p.firstName, p.lastName].filter(Boolean).join(" ");
   if (name) sections.push(`Name: ${name}`);
   if (p.headline) sections.push(`Headline: ${p.headline}`);
 
-  const loc = p.location?.linkedinText ||
-    [p.location?.parsed?.city, p.location?.parsed?.state, p.location?.parsed?.country].filter(Boolean).join(", ");
+  const loc = p.addressWithoutCountry || p.addressCountryOnly;
   if (loc) sections.push(`Location: ${loc}`);
 
   if (p.about) sections.push(`\nAbout:\n${p.about}`);
 
-  if (p.experience?.length) {
-    const lines = p.experience.map((e) => {
-      const start = formatDate(e.startDate);
-      const end = formatDate(e.endDate);
-      const header = `${e.position || "Role"} at ${e.companyName || "Company"} (${start} – ${end})`;
-      return e.description ? `${header}\n${e.description}` : header;
+  if (p.experiences?.length) {
+    const lines = p.experiences.map((e) => {
+      const start = e.jobStartedOn || "";
+      const end = e.jobStillWorking ? "Present" : (e.jobEndedOn || "Present");
+      const period = start ? `(${start} – ${end})` : "";
+      const header = `${e.title || "Role"} at ${e.companyName || "Company"} ${period}`.trim();
+      return e.jobDescription ? `${header}\n${e.jobDescription}` : header;
     });
     sections.push(`\nExperience:\n${lines.join("\n\n")}`);
   }
 
-  if (p.education?.length) {
-    const lines = p.education.map((e) => {
-      const parts = [e.schoolName];
-      if (e.degree || e.fieldOfStudy) {
-        parts.push([e.degree, e.fieldOfStudy].filter(Boolean).join(", "));
-      }
-      const years = e.period || [e.startDate?.year, e.endDate?.year].filter(Boolean).join(" – ");
-      if (years) parts.push(`(${years})`);
-      return parts.filter(Boolean).join(" — ");
+  if (p.educations?.length) {
+    const lines = p.educations.map((e) => {
+      const subtitle = e.subtitle && e.subtitle !== "null, null" ? e.subtitle : "";
+      const start = e.period?.startedOn;
+      const end = e.period?.endedOn;
+      const years = start || end ? `(${[start, end].filter(Boolean).join(" – ")})` : "";
+      return [e.title, subtitle, years].filter(Boolean).join(" — ");
     });
     sections.push(`\nEducation:\n${lines.join("\n")}`);
   }
 
   if (p.skills?.length) {
-    const skillList = (p.skills as (ApifySkill | string)[])
-      .map((s) => (typeof s === "string" ? s : s.name ?? ""))
-      .filter(Boolean)
-      .slice(0, 30)
-      .join(", ");
+    const skillList = p.skills.slice(0, 30).join(", ");
     if (skillList) sections.push(`\nSkills:\n${skillList}`);
   }
 
-  if (p.certifications?.length) {
-    const certs = p.certifications.map((c) => c.name).filter(Boolean);
+  if (p.licenseAndCertificates?.length) {
+    const certs = p.licenseAndCertificates.map((c) => c.name || c.title).filter(Boolean);
     if (certs.length) sections.push(`\nCertifications:\n${certs.join("\n")}`);
   }
 
@@ -119,12 +95,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "APIFY_API_TOKEN not configured" }, { status: 503 });
   }
 
-  const runUrl = `https://api.apify.com/v2/acts/harvestapi~linkedin-profile-scraper/run-sync-get-dataset-items?token=${apiToken}`;
+  const runUrl = `https://api.apify.com/v2/acts/dev_fusion~Linkedin-Profile-Scraper/run-sync-get-dataset-items?token=${apiToken}`;
 
   const res = await fetch(runUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ urls: [url] }),
+    body: JSON.stringify({ profileUrls: [url] }),
   });
 
   if (!res.ok) {
@@ -136,9 +112,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to fetch profile" }, { status: 502 });
   }
 
-  const items: ApifyProfile[] = await res.json();
+  const items: Profile[] = await res.json();
   const profile = items?.[0];
-  const name = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ");
+  const name = profile?.fullName ||
+    [profile?.firstName, profile?.lastName].filter(Boolean).join(" ");
 
   if (!profile || !name) {
     return NextResponse.json({ error: "Profile not found or private" }, { status: 404 });

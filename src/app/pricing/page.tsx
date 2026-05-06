@@ -84,8 +84,16 @@ export default function PricingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ planId }),
       });
-      const { url } = await res.json();
-      if (url) window.location.href = url;
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Payment error: " + (data.error || "Unknown error. Check console."));
+        console.error("[checkout]", data);
+      }
+    } catch (err) {
+      console.error("[checkout]", err);
+      alert("Failed to connect to payment. Please try again.");
     } finally {
       setLoadingPlan(null);
     }
